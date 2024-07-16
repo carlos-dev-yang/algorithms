@@ -1,5 +1,5 @@
 from typing import List, Tuple, Any, Callable, Optional
-from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list
+from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_linked_list_input
 
 def compare_outputs(output: Any, expected: Any) -> bool:
     if output is None and expected == []:
@@ -22,20 +22,23 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     passed = 0
     total = len(test_cases)
     
+    # 함수가 연결 리스트를 입력으로 받는지 확인
+    expects_linked_list = is_linked_list_input(solution_func)
+    
     for i, (input_data, expected) in enumerate(test_cases, 1):
         try:
             if isinstance(input_data, tuple):
                 # 여러 입력 매개변수 처리
                 processed_inputs = []
                 for inp in input_data:
-                    if isinstance(inp, list) and all(isinstance(x, int) for x in inp):
+                    if expects_linked_list and isinstance(inp, list) and all(isinstance(x, int) for x in inp):
                         processed_inputs.append(list_to_linked_list(inp))
                     else:
                         processed_inputs.append(inp)
                 result = solution_func(*processed_inputs)
             else:
                 # 단일 입력 매개변수 처리
-                if isinstance(input_data, list) and all(isinstance(x, int) for x in input_data):
+                if expects_linked_list and isinstance(input_data, list) and all(isinstance(x, int) for x in input_data):
                     processed_input = list_to_linked_list(input_data)
                 else:
                     processed_input = input_data
@@ -45,7 +48,10 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
             print(f"테스트 케이스 {i}:")
             print(f"  입력 = {input_data}")
             print(f"  예상 출력 = {expected}")
-            print(f"  실제 출력 = {linked_list_to_list(result) if result is not None else []}")
+            if isinstance(result, ListNode):
+                print(f"  실제 출력 = {linked_list_to_list(result)}")
+            else:
+                print(f"  실제 출력 = {result}")
             print(f"  상태: {status}")
             
             if status == "통과":

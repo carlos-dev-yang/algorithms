@@ -5,6 +5,13 @@ class ListNode:
         self.val = val
         self.next = next
 
+def is_linked_list_input(func: Callable) -> bool:
+    """함수의 첫 번째 매개변수가 ListNode 타입인지 확인"""
+    import inspect
+    params = inspect.signature(func).parameters
+    first_param = next(iter(params.values()))
+    return 'ListNode' in str(first_param.annotation)
+
 # 리스트를 연결 리스트로 변환하는 유틸리티 함수
 def create_linked_list(elements: list) -> Optional[ListNode]:
     dummy = ListNode(0)
