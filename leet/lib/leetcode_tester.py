@@ -1,5 +1,6 @@
-from typing import List, Tuple, Any, Callable, Optional
+from typing import List, Tuple, Any, Callable
 from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_linked_list_input
+import copy
 
 def compare_outputs(output: Any, expected: Any) -> bool:
     if output is None and expected == []:
@@ -10,6 +11,17 @@ def compare_outputs(output: Any, expected: Any) -> bool:
         return output == linked_list_to_list(expected)
     else:
         return output == expected
+
+def process_input(input_data: Any, expects_linked_list: bool) -> Any:
+    """입력 데이터를 적절히 처리"""
+    if isinstance(input_data, tuple):
+        return tuple(process_input(item, expects_linked_list) for item in input_data)
+    elif expects_linked_list and isinstance(input_data, list) and all(isinstance(x, int) for x in input_data):
+        return list_to_linked_list(input_data)
+    elif isinstance(input_data, list):
+        return [process_input(item, expects_linked_list) for item in input_data]
+    else:
+        return input_data
 
 def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     """
@@ -27,21 +39,16 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     
     for i, (input_data, expected) in enumerate(test_cases, 1):
         try:
-            if isinstance(input_data, tuple):
-                # 여러 입력 매개변수 처리
-                processed_inputs = []
-                for inp in input_data:
-                    if expects_linked_list and isinstance(inp, list) and all(isinstance(x, int) for x in inp):
-                        processed_inputs.append(list_to_linked_list(inp))
-                    else:
-                        processed_inputs.append(inp)
-                result = solution_func(*processed_inputs)
+            # 입력 데이터의 깊은 복사본 생성
+            input_copy = copy.deepcopy(input_data)
+            
+            # 입력 처리
+            processed_input = process_input(input_copy, expects_linked_list)
+            
+            # 함수 실행
+            if isinstance(processed_input, tuple):
+                result = solution_func(*processed_input)
             else:
-                # 단일 입력 매개변수 처리
-                if expects_linked_list and isinstance(input_data, list) and all(isinstance(x, int) for x in input_data):
-                    processed_input = list_to_linked_list(input_data)
-                else:
-                    processed_input = input_data
                 result = solution_func(processed_input)
 
             status = "통과" if compare_outputs(result, expected) else "실패"
