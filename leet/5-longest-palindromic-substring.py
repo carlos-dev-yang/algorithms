@@ -13,6 +13,8 @@ class Solution:
                 right += 1
             return right - left - 1
 
+        # 한 글자씩 확장하는데, 홀수와 짝수의 케이스를 같이 증가하면서 검사함
+        # 중앙을 지나면서 현재까지 발견한 수가 남은 수의 최대 가능성보다 크다면 중단(컷) 시킬 수 있음
         start, end = 0, 0
         for i in range(len(s)):
             len1 = expand_around_center(i, i)
