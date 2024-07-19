@@ -10,6 +10,8 @@ if __name__ == "__main__":
     solution = Solution()
     
     test_cases = [
+        # 입력이 여러개이면 튜플로 묶기, 
+        # 출력이 여러개이면 리스트로 묶기
         ("QUEST", 'ANSWER'),
     ]
     

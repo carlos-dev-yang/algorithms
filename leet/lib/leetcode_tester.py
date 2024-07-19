@@ -3,6 +3,13 @@ from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_
 import copy
 
 def compare_outputs(output: Any, expected: Any) -> bool:
+    """출력과 예상 값을 비교. expected가 리스트인 경우 여러 답을 허용"""
+    if isinstance(expected, list):
+        return any(compare_single_output(output, exp) for exp in expected)
+    return compare_single_output(output, expected)
+
+def compare_single_output(output: Any, expected: Any) -> bool:
+    """단일 출력과 예상 값을 비교"""
     if output is None and expected == []:
         return True
     if isinstance(output, ListNode):
@@ -29,23 +36,19 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     
     :param solution_func: 테스트할 해결 함수
     :param test_cases: (입력, 예상 출력) 형태의 튜플 리스트. 입력은 단일 값 또는 튜플일 수 있습니다.
+                       예상 출력은 단일 값 또는 허용 가능한 답변 리스트일 수 있습니다.
     :return: (성공한 테스트 수, 전체 테스트 수)
     """
     passed = 0
     total = len(test_cases)
     
-    # 함수가 연결 리스트를 입력으로 받는지 확인
     expects_linked_list = is_linked_list_input(solution_func)
     
     for i, (input_data, expected) in enumerate(test_cases, 1):
         try:
-            # 입력 데이터의 깊은 복사본 생성
             input_copy = copy.deepcopy(input_data)
-            
-            # 입력 처리
             processed_input = process_input(input_copy, expects_linked_list)
             
-            # 함수 실행
             if isinstance(processed_input, tuple):
                 result = solution_func(*processed_input)
             else:
