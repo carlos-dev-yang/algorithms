@@ -1,5 +1,6 @@
 from typing import List, Tuple, Any, Callable
 from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_linked_list_input
+from lib.TreeNode import TreeNode, list_to_tree, tree_to_list, is_tree_input
 import copy
 
 def compare_outputs(output: Any, expected: Any) -> bool:
@@ -16,17 +17,23 @@ def compare_single_output(output: Any, expected: Any) -> bool:
         return linked_list_to_list(output) == expected
     elif isinstance(expected, ListNode):
         return output == linked_list_to_list(expected)
+    elif isinstance(output, TreeNode):
+        return tree_to_list(output) == expected
+    elif isinstance(expected, TreeNode):
+        return output == tree_to_list(expected)
     else:
         return output == expected
 
-def process_input(input_data: Any, expects_linked_list: bool) -> Any:
+def process_input(input_data: Any, expects_linked_list: bool, expects_tree: bool) -> Any:
     """입력 데이터를 적절히 처리"""
     if isinstance(input_data, tuple):
-        return tuple(process_input(item, expects_linked_list) for item in input_data)
+        return tuple(process_input(item, expects_linked_list, expects_tree) for item in input_data)
     elif expects_linked_list and isinstance(input_data, list) and all(isinstance(x, int) for x in input_data):
         return list_to_linked_list(input_data)
+    elif expects_tree and isinstance(input_data, list):
+        return list_to_tree(input_data)
     elif isinstance(input_data, list):
-        return [process_input(item, expects_linked_list) for item in input_data]
+        return [process_input(item, expects_linked_list, expects_tree) for item in input_data]
     else:
         return input_data
 
@@ -43,11 +50,12 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     total = len(test_cases)
     
     expects_linked_list = is_linked_list_input(solution_func)
+    expects_tree = is_tree_input(solution_func)
     
     for i, (input_data, expected) in enumerate(test_cases, 1):
         try:
             input_copy = copy.deepcopy(input_data)
-            processed_input = process_input(input_copy, expects_linked_list)
+            processed_input = process_input(input_copy, expects_linked_list, expects_tree)
             
             if isinstance(processed_input, tuple):
                 result = solution_func(*processed_input)
@@ -60,6 +68,8 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
             print(f"  예상 출력 = {expected}")
             if isinstance(result, ListNode):
                 print(f"  실제 출력 = {linked_list_to_list(result)}")
+            elif isinstance(result, TreeNode):
+                print(f"  실제 출력 = {tree_to_list(result)}")
             else:
                 print(f"  실제 출력 = {result}")
             print(f"  상태: {status}")
