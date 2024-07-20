@@ -1,13 +1,19 @@
 from typing import List, Tuple, Any, Callable
 from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_linked_list_input
 from lib.TreeNode import TreeNode, list_to_tree, tree_to_list, is_tree_input
-import copy
 
 def compare_outputs(output: Any, expected: Any) -> bool:
-    """출력과 예상 값을 비교. expected가 리스트인 경우 여러 답을 허용"""
-    if isinstance(expected, list):
-        return any(compare_single_output(output, exp) for exp in expected)
-    return compare_single_output(output, expected)
+    if isinstance(expected, list) and all(isinstance(item, list) for item in expected):
+        return output == expected
+    if isinstance(output, ListNode):
+        return linked_list_to_list(output) == expected
+    if isinstance(expected, ListNode):
+        return output == linked_list_to_list(expected)
+    if isinstance(output, TreeNode):
+        return tree_to_list(output) == expected
+    if isinstance(expected, TreeNode):
+        return output == tree_to_list(expected)
+    return output == expected
 
 def compare_single_output(output: Any, expected: Any) -> bool:
     """단일 출력과 예상 값을 비교"""
@@ -38,14 +44,6 @@ def process_input(input_data: Any, expects_linked_list: bool, expects_tree: bool
         return input_data
 
 def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
-    """
-    주어진 해결 함수와 테스트 케이스로 테스트를 실행합니다.
-    
-    :param solution_func: 테스트할 해결 함수
-    :param test_cases: (입력, 예상 출력) 형태의 튜플 리스트. 입력은 단일 값 또는 튜플일 수 있습니다.
-                       예상 출력은 단일 값 또는 허용 가능한 답변 리스트일 수 있습니다.
-    :return: (성공한 테스트 수, 전체 테스트 수)
-    """
     passed = 0
     total = len(test_cases)
     
@@ -54,8 +52,7 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
     
     for i, (input_data, expected) in enumerate(test_cases, 1):
         try:
-            input_copy = copy.deepcopy(input_data)
-            processed_input = process_input(input_copy, expects_linked_list, expects_tree)
+            processed_input = process_input(input_data, expects_linked_list, expects_tree)
             
             if isinstance(processed_input, tuple):
                 result = solution_func(*processed_input)
