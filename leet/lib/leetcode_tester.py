@@ -1,3 +1,4 @@
+import traceback
 from typing import List, Tuple, Any, Callable
 from lib.ListNode import ListNode, list_to_linked_list, linked_list_to_list, is_linked_list_input
 from lib.TreeNode import TreeNode, list_to_tree, tree_to_list, is_tree_input
@@ -78,6 +79,8 @@ def run_tests(solution_func: Callable, test_cases: List[Tuple[Any, Any]]):
             print(f"  입력 = {input_data}")
             print(f"  예상 출력 = {expected}")
             print(f"  오류 메시지: {str(e)}")
+            print("오류 추적:")
+            traceback.print_exc()
     
     print(f"\n결과: {passed}/{total} 테스트 통과")
     return passed, total
