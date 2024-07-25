@@ -12,7 +12,7 @@ class Solution:
         첫 번째 만나는 포인트가 사이클내에 중복이 있다는것을 의미함.
         두번째 while문에서는 각자 다른 출발점에서 시작해서 같은 속도로 나아가면 중복에서 항상 만나는다는 것임..
         어렵다
-        수학 등식으로는 설명된다함 :sad
+        수학 공식으로는 설명된다함 :sad
         '''
 
         while True:
@@ -25,6 +25,7 @@ class Solution:
         while slow != fast:
             slow = nums[slow]
             fast = nums[fast]
+            print(slow, fast)
         
         return slow
                 
@@ -38,7 +39,7 @@ if __name__ == "__main__":
         ([1,3,4,2,2], 2),
         ([3,1,3,4,2], 3),
         ([3,3,3,3,3], 3),
-        ([1,5,3,7,6,3,2,4], 3),
+        ([1,5,3,7,6,4,3,2], 3),
     ]
     
     print("테스트 실행:")
