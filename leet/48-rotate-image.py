@@ -7,6 +7,10 @@ class Solution:
         n = len(matrix)
         for i in range(n//2):
             for j in range(i, n - i - 1):
+                '''
+                2d공간에서 사고하는 능력을 요하는 문제인데, 아직 이런거 익숙하지 않은듯..
+                일반적인 알고리즘 범주보다는 문제해결에 가까운 영역으로 보인다.ㄴ
+                '''
                 tmp = matrix[i][j]
                 matrix[i][j] = matrix[n-1-j][i]
                 matrix[n-1-j][i] = matrix[n-1-i][n-1-j]
