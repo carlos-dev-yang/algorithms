@@ -1,6 +1,7 @@
 from lib.leetcode_tester import run_tests
 from typing import List, Dict, Tuple, Optional
 from lib.ListNode import ListNode, create_linked_list, linked_list_to_string
+from lib.TreeNode import TreeNode
 
 class Solution:
     # copyFromLeetcodeDefLine
