@@ -14,6 +14,7 @@ class Solution:
         # 방문 상태: 0 = 미방문, 1 = 방문 중, 2 = 방문 완료
         visited = [0] * numCourses
         
+        # floyd cycle detection에 대해서 확인하기.
         def dfs(course):
             if visited[course] == 1:
                 return False  # 순환 발견
