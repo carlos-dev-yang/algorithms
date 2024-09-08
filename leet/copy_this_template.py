@@ -14,7 +14,7 @@ if __name__ == "__main__":
     test_cases = [
         # 입력이 여러개이면 튜플로 묶기, 
         # 출력이 여러개이면 리스트로 묶기
-        ("QUEST", 'ANSWER'),
+        ("QUEST", "ANSWER"),
     ]
     
     print("테스트 실행:")
